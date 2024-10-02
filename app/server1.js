@@ -1,21 +1,8 @@
 #!/usr/bin/env node
 'use strict';
-const cluster = require('cluster');
-const numCPUs = require('os').cpus().length;
 
-if (cluster.isMaster) {
-    console.log(`Master ${process.pid} is running`);
 
-    // Fork workers.
-    for (let i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
 
-    cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} died`);
-        cluster.fork()
-    });
-} else {
     const PORT = process.env.PORT || 8080;
     const app = require('./index');
     const spdy = require('spdy');
@@ -53,4 +40,4 @@ if (cluster.isMaster) {
     };
 
     spdy.createServer(options, app).listen(PORT, () => console.log(`Listening on ${PORT}`));
-          }
+          
